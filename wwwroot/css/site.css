@@ -1,0 +1,80 @@
+/* --text: #14000a;
+--background: #ffebf4;
+--primary-button: #02c56a;
+--secondary-button: #fffafc;
+--accent: #02c56a;
+
+--text: #2c071b;
+--background: #f9dcec;
+--primary-button: #baea80;
+--secondary-button: #f6cae3;
+--accent: #80baea; */
+
+/*--text: #e1d4fc;
+--background: #10032b;
+--primary-button: #da5ef3;
+--secondary-button: #180210;
+--accent: #da1097;*/
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.post {
+    margin-left: 200px;
+    margin-right: 200px;
+    background-color: #341245;
+    margin-bottom: 30px;
+}
+
+.post:hover {
+    transform: (90deg);
+}
+
+.header {
+    font-size: 11px;
+    background-color: rgb(248, 209, 137);
+    border-bottom-style: solid;
+    border-width: 5px;
+    border-color: #da5ef3;
+}
+
+.Author {
+    padding-top: 5px;
+    color: rgb(187, 164, 164)
+}
+
+.postbody {
+    color: #e1d4fc;
+    margin-bottom: 10px;
+}
+
+.postbutton {
+    position: absolute;
+}
+
+.commentsection {
+    background-color: rebeccapurple;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.commentauthor {
+    font-size: 7px;
+    color: #e1d4fc;
+}

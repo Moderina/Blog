@@ -1,0 +1,159 @@
+﻿@page
+@using Blog.Models;
+@using Blog.Interfaces;
+@inject IUserService _userservice;
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreatePostModal">
+        Add Roast
+    </button>
+}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="CreatePostModal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Create new Roast</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    @*<span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="Post.Title" class="col-form-label"></label>
+                        <input asp-for="Post.Title" type="text" class="form-control" id="PostTitle" placeholder="Title" />
+                        <label asp-for="Post.Description" class="form-label">Post Title</label>
+                        <textarea asp-for="Post.Description" type="text" class="form-control" id="PostText" placeholder="Whats new"></textarea>
+                        <label asp-for="Image" class="col-form-label"></label>
+                        <input asp-for="Image" type="file" class="form-control" id="PostImage"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.IsInRole("admin")) {
+    <p>znowu bez</p>
+}
+
+<div id="posts">
+    @if (Model.Posts.Posts.Count() != 0)
+    {
+
+        foreach(Post post in Model.Posts.Posts)
+        {
+ @*           <div class="text-center border border-primary rounded">
+                @post.Title
+                <br />
+                @post.Description
+            </div>*@
+            <div class="post rounded" role="button" data-bs-toggle="modal" data-bs-target="#InspectPostModal">
+                @*<button type="button" class="postbutton" data-bs-toggle="modal" data-bs-target="#InspectPostModal"></button>*@
+                <div id="header" class="header">
+                    <a class="Author" href="/UserProfile/?UserId=@post.Author">
+                        @_userservice.GetUserName(post.Author)
+                        @*@post.Author*@
+                    </a>
+                    @post.date
+                </div>
+                <div>
+                    @post.Title
+                </div>
+                <div class="postbody">
+                    @post.Description
+                </div>
+                <div>
+                @if (post.SerializedImages != "")
+                {
+                    <img src="data:image/jpg;base64,@post.SerializedImages" width="120px" height="120px" />
+                }
+                </div>
+                @if (post.Commends != "&")
+                {
+                    foreach (Comment com in Model.Comments)
+                    {
+                        System.Diagnostics.Debug.WriteLine("RR" + post.Commends + "RR");
+                        var username = _userservice.GetUserName(com.UserID);
+                        System.Diagnostics.Debug.WriteLine("&" + com.Id.ToString() + "&");
+
+                        if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                        {
+                            System.Diagnostics.Debug.WriteLine("OOOOOOOOOOOOOo" + User.Identity.Name);
+                            <div class="commentsection">
+                                <div class="commentauthor">
+                                    @username
+                                </div>
+                                <div class="postbody">
+                                    @com.Text
+                                </div>
+                                @if (username == User.Identity.Name || User.IsInRole("admin"))
+                                {
+                                    <form method="post" asp-page-handler="DeleteComment">
+                                        <button type="submit" class="btn" name="comID" value="@com.Id">Del</button>
+                                    </form>
+                                }
+                            </div>
+
+                        }
+                    }
+                }
+                @if(User.Identity.IsAuthenticated)
+                {
+                    <form method="post" asp-page-handler="Comment" class="form-inline">
+                        <div class="form-group mb-2">
+                            <label asp-for="Comment.Text" class="col-form-label" hidden></label>
+                            <input asp-for="Comment.Text" type="text" class="form-control" id="PostTitle" placeholder="Got something to add?" />
+                            <button type="submit" class="btn btn-primary" name="Postid" value="@post.Id" hidden>Post</button>
+                        </div>
+                    </form>
+                }
+            </div>
+
+
+        }
+    }
+</div>
+
+<nav class="justify-content-center">
+    <ul class="pagination">
+        <li class="page-item @(Model.Posts.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index" asp-route-pageIndex=@(Model.Posts.PageIndex - 1)>Previous</a>
+        </li>
+        @for (int i = 1; i <= Model.Posts.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Posts.PageIndex ? "active" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex=@i>@i</a>
+            </li>
+        }
+        <li class="page-item @(Model.Posts.HasNextPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index" asp-route-pageIndex=@(Model.Posts.PageIndex + 1)>Next</a>
+        </li>
+    </ul>
+</nav>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

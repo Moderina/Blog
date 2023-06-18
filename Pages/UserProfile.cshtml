@@ -1,0 +1,87 @@
+﻿@page
+@using Blog.Interfaces;
+@using Blog.Models;
+@inject IUserService _userservice;
+@model Blog.Pages.UserProfileModel
+@{
+}
+
+<h1 class="text-center">@_userservice.GetUserName(Model.UserId)'s Posts</h1>
+
+<div id="posts">
+    @if (Model.Posts.Posts.Count() != 0)
+    {
+
+        foreach (Post post in Model.Posts.Posts)
+        {
+            @*           <div class="text-center border border-primary rounded">
+    @post.Title
+    <br />
+    @post.Description
+    </div>*@
+            <div class="post rounded" role="button" data-bs-toggle="modal" data-bs-target="#InspectPostModal">
+                @*<button type="button" class="postbutton" data-bs-toggle="modal" data-bs-target="#InspectPostModal"></button>*@
+                <div id="header" class="header">
+                    <div class="Author">
+                        @_userservice.GetUserName(post.Author)
+                        @*@post.Author*@
+                    </div>
+                    @post.date
+                </div>
+                <div>
+                    @post.Title
+                </div>
+                <div class="postbody">
+                    @post.Description
+                </div>
+                <div>
+                    @if (post.SerializedImages != "")
+                    {
+                        <img src="data:image/jpg;base64,@post.SerializedImages" width="120px" height="120px" />
+                    }
+                </div>
+                @if (post.Commends != "&")
+                {
+                    foreach (Comment com in Model.Comments)
+                    {
+                        System.Diagnostics.Debug.WriteLine("RR" + post.Commends + "RR");
+                        var username = _userservice.GetUserName(com.UserID);
+                        System.Diagnostics.Debug.WriteLine("&" + com.Id.ToString() + "&");
+
+                        if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                        {
+                            System.Diagnostics.Debug.WriteLine("OOOOOOOOOOOOOo" + User.Identity.Name);
+                            <div class="commentsection">
+                                <div class="commentauthor">
+                                    @username
+                                </div>
+                                <div class="postbody">
+                                    @com.Text
+                                </div>
+                                @if (username == User.Identity.Name || User.IsInRole("admin"))
+                                {
+                                    <form method="post" asp-page-handler="DeleteComment">
+                                        <button type="submit" class="btn" name="comID" value="@com.Id">Del</button>
+                                    </form>
+                                }
+                            </div>
+
+                        }
+                    }
+                }
+                @*@if (User.Identity.IsAuthenticated)
+                {
+                    <form method="post" asp-page-handler="Comment" class="form-inline">
+                        <div class="form-group mb-2">
+                            <label asp-for="Comment.Text" class="col-form-label" hidden></label>
+                            <input asp-for="Comment.Text" type="text" class="form-control" id="PostTitle" placeholder="Got something to add?" />
+                            <button type="submit" class="btn btn-primary" name="Postid" value="@post.Id" hidden>Post</button>
+                        </div>
+                    </form>
+                }*@
+            </div>
+
+
+        }
+    }
+</div>

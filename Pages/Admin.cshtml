@@ -1,0 +1,31 @@
+﻿@page
+@model Blog.Pages.AdminModel
+@{
+}
+
+<h1>Admin Tools</h1>
+
+<div class="alert alert-success" role="alert">@Model.StatusMessage</div>
+
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.UsersVM)
+    {
+        <tr>
+            <td>@item.Username</td>
+            <td>@item.Email</td>
+            <td>
+                <form method="post">
+                    <input type="hidden" name="delete_username" value="@item.Username" />
+                    <button type="submit" id="btn" class="btn btn-primary">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+
