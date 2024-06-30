@@ -8,16 +8,16 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Blog</h1>
 </div>
 
 @if (User.Identity.IsAuthenticated)
 {
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreatePostModal">
-        Add Roast
-    </button>
+    <div class="text-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreatePostModal">
+            Add post
+        </button>
+    </div>
 }
 
 
@@ -29,7 +29,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-title">Create new Roast</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    @*<span aria-hidden="true">&times;</span>*@
                 </button>
             </div>
             <div class="modal-body">
@@ -52,9 +51,7 @@
     </div>
 </div>
 
-@if (User.IsInRole("admin")) {
-    <p>znowu bez</p>
-}
+
 
 <div id="posts">
     @if (Model.Posts.Posts.Count() != 0)
@@ -62,61 +59,56 @@
 
         foreach(Post post in Model.Posts.Posts)
         {
- @*           <div class="text-center border border-primary rounded">
-                @post.Title
-                <br />
-                @post.Description
-            </div>*@
-            <div class="post rounded" role="button" data-bs-toggle="modal" data-bs-target="#InspectPostModal">
-                @*<button type="button" class="postbutton" data-bs-toggle="modal" data-bs-target="#InspectPostModal"></button>*@
+            <div class="post rounded">
                 <div id="header" class="header">
                     <a class="Author" href="/UserProfile/?UserId=@post.Author">
                         @_userservice.GetUserName(post.Author)
-                        @*@post.Author*@
                     </a>
-                    @post.date
-                </div>
-                <div>
-                    @post.Title
+                    <div class="title">
+                        @post.Title
+                    </div>
+                    <div class="date">@post.date</div>
                 </div>
                 <div class="postbody">
-                    @post.Description
-                </div>
-                <div>
-                @if (post.SerializedImages != "")
-                {
-                    <img src="data:image/jpg;base64,@post.SerializedImages" width="120px" height="120px" />
-                }
-                </div>
-                @if (post.Commends != "&")
-                {
-                    foreach (Comment com in Model.Comments)
-                    {
-                        System.Diagnostics.Debug.WriteLine("RR" + post.Commends + "RR");
-                        var username = _userservice.GetUserName(com.UserID);
-                        System.Diagnostics.Debug.WriteLine("&" + com.Id.ToString() + "&");
-
-                        if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                    <div class="img">
+                        @if (post.SerializedImages != "")
                         {
-                            System.Diagnostics.Debug.WriteLine("OOOOOOOOOOOOOo" + User.Identity.Name);
-                            <div class="commentsection">
-                                <div class="commentauthor">
-                                    @username
+                            <img src="data:image/jpg;base64,@post.SerializedImages" width="480px" height="480px" />
+                        }
+                    </div>
+                    <div id="posttext" class="text">
+                        @post.Description
+                    </div>
+                </div>
+                
+                <div class="commentsection">
+                    @if (post.Commends != "&")
+                    {
+                        foreach (Comment com in Model.Comments)
+                        {
+                            var username = _userservice.GetUserName(com.UserID);
+                            if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                            {
+                                <div class="comment">
+                                    <div class="commentauthor">
+                                        @username
+                                    </div>
+                                    <div class="commentbody">
+                                        <div class="commenttext">@com.Text</div>
+                                        
+                                    </div>
+                                    @if (username == User.Identity.Name || User.IsInRole("admin"))
+                                    {
+                                        <form method="post" asp-page-handler="DeleteComment">
+                                            <button type="submit" class="delbutton btn btn-primary" name="comID" value="@com.Id">Del</button>
+                                        </form>
+                                    }
                                 </div>
-                                <div class="postbody">
-                                    @com.Text
-                                </div>
-                                @if (username == User.Identity.Name || User.IsInRole("admin"))
-                                {
-                                    <form method="post" asp-page-handler="DeleteComment">
-                                        <button type="submit" class="btn" name="comID" value="@com.Id">Del</button>
-                                    </form>
-                                }
-                            </div>
-
+                            }
                         }
                     }
-                }
+                </div>
+                
                 @if(User.Identity.IsAuthenticated)
                 {
                     <form method="post" asp-page-handler="Comment" class="form-inline">
@@ -150,7 +142,6 @@
         </li>
     </ul>
 </nav>
-
 
 @section Scripts {
     @{

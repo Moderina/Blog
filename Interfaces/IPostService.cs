@@ -11,6 +11,7 @@ namespace Blog.Interfaces
         public void EditPost(int id, Post post, IFormFile Image);
         public void DeletePost(int id);
 
+        public List<Comment> GetComments();
         public void AddComment(Comment comment, int postid);
         public void DeleteComment(int comid);
 

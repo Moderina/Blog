@@ -54,6 +54,11 @@ namespace Blog.Repositories
 
 //////////////////////COMMENTS
 
+        public List<Comment> GetComments()
+        {
+            return _context.Comments.ToList();
+        }
+
         public Comment GetComment(int id)
         {
             return _context.Comments.Where(_ => _.Id == id).FirstOrDefault();

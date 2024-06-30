@@ -12,5 +12,8 @@ namespace Blog.Models
 
         [Required]
         public string Text { get; set; }
+
+        public string AddressIP { get; set; }
+
     }
 }

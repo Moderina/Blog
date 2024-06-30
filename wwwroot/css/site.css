@@ -33,11 +33,12 @@ html {
 
 body {
     margin-bottom: 60px;
+    background-color: #80baea
 }
 
 .post {
-    margin-left: 200px;
-    margin-right: 200px;
+    margin-left: 20%;
+    margin-right: 20%;
     background-color: #341245;
     margin-bottom: 30px;
 }
@@ -47,6 +48,8 @@ body {
 }
 
 .header {
+    display: flex;
+    justify-content: space-between;
     font-size: 11px;
     background-color: rgb(248, 209, 137);
     border-bottom-style: solid;
@@ -55,13 +58,32 @@ body {
 }
 
 .Author {
+    padding-left:5px;
+    padding-top:2px;
+    color: darkblue;
+    font-size: 14px;
+}
+
+.date {
+    padding-right: 5px;
+    padding-top: 2px;
+}
+
+.title {
     padding-top: 5px;
-    color: rgb(187, 164, 164)
+    font-size: 20px;
+    color: #1c1947;
+    font-weight: 600;
 }
 
 .postbody {
+    display: flex;
     color: #e1d4fc;
     margin-bottom: 10px;
+}
+
+.text {
+    padding: 20px;
 }
 
 .postbutton {
@@ -69,12 +91,41 @@ body {
 }
 
 .commentsection {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment {
+    display: flex;
+    justify-content: space-between;
     background-color: rebeccapurple;
     margin-bottom: 5px;
-    border-radius: 4px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.commentbody {
+    flex-grow: 2;
 }
 
 .commentauthor {
-    font-size: 7px;
+    font-size: 12px;
+    color: #ebc640;
+    padding-top:5px;
+}
+
+.commenttext {
+    padding-top: 10px;
+    padding-left: 20px;
     color: #e1d4fc;
+}
+
+.delbutton {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    background-color: #da5ef3;
+    border-color: #da5ef3;
 }

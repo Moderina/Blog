@@ -11,77 +11,69 @@
 <div id="posts">
     @if (Model.Posts.Posts.Count() != 0)
     {
-
         foreach (Post post in Model.Posts.Posts)
         {
-            @*           <div class="text-center border border-primary rounded">
-    @post.Title
-    <br />
-    @post.Description
-    </div>*@
             <div class="post rounded" role="button" data-bs-toggle="modal" data-bs-target="#InspectPostModal">
-                @*<button type="button" class="postbutton" data-bs-toggle="modal" data-bs-target="#InspectPostModal"></button>*@
                 <div id="header" class="header">
-                    <div class="Author">
+                    <a class="Author" href="/UserProfile/?UserId=@post.Author">
                         @_userservice.GetUserName(post.Author)
-                        @*@post.Author*@
+                    </a>
+                    <div class="title">
+                        @post.Title
                     </div>
-                    @post.date
-                </div>
-                <div>
-                    @post.Title
+                    <div class="date">@post.date</div>
                 </div>
                 <div class="postbody">
-                    @post.Description
-                </div>
-                <div>
-                    @if (post.SerializedImages != "")
-                    {
-                        <img src="data:image/jpg;base64,@post.SerializedImages" width="120px" height="120px" />
-                    }
-                </div>
-                @if (post.Commends != "&")
-                {
-                    foreach (Comment com in Model.Comments)
-                    {
-                        System.Diagnostics.Debug.WriteLine("RR" + post.Commends + "RR");
-                        var username = _userservice.GetUserName(com.UserID);
-                        System.Diagnostics.Debug.WriteLine("&" + com.Id.ToString() + "&");
-
-                        if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                    <div class="img">
+                        @if (post.SerializedImages != "")
                         {
-                            System.Diagnostics.Debug.WriteLine("OOOOOOOOOOOOOo" + User.Identity.Name);
-                            <div class="commentsection">
-                                <div class="commentauthor">
-                                    @username
-                                </div>
-                                <div class="postbody">
-                                    @com.Text
-                                </div>
-                                @if (username == User.Identity.Name || User.IsInRole("admin"))
-                                {
-                                    <form method="post" asp-page-handler="DeleteComment">
-                                        <button type="submit" class="btn" name="comID" value="@com.Id">Del</button>
-                                    </form>
-                                }
-                            </div>
+                            <img src="data:image/jpg;base64,@post.SerializedImages" width="480px" height="480px" />
+                        }
+                    </div>
+                    <div class="text">
+                        @post.Description
+                    </div>
+                </div>
+                <div class="commentsection">
+                    @if (post.Commends != "&")
+                    {
+                        foreach (Comment com in Model.Comments)
+                        {
+                            var username = _userservice.GetUserName(com.UserID);
+                            if (post.Commends.Contains("&" + com.Id.ToString() + "&"))
+                            {
+                                <div class="comment">
+                                    <div class="commentauthor">
+                                        @username
+                                    </div>
+                                    <div class="commentbody">
+                                        <div class="commenttext">@com.Text</div>
 
+                                    </div>
+                                    @if (username == User.Identity.Name || User.IsInRole("admin"))
+                                    {
+                                        <form method="post" asp-page-handler="DeleteComment">
+                                            <input type="hidden" asp-for="@Model.UserId"/>
+                                            <button type="submit" class="delbutton btn btn-primary" name="comID" value="@com.Id">Del</button>
+                                        </form>
+                                    }
+                                </div>
+                            }
                         }
                     }
-                }
-                @*@if (User.Identity.IsAuthenticated)
+                </div>
+                @if (User.Identity.IsAuthenticated)
                 {
                     <form method="post" asp-page-handler="Comment" class="form-inline">
                         <div class="form-group mb-2">
                             <label asp-for="Comment.Text" class="col-form-label" hidden></label>
                             <input asp-for="Comment.Text" type="text" class="form-control" id="PostTitle" placeholder="Got something to add?" />
+                            <input type="hidden" asp-for="@Model.UserId" />
                             <button type="submit" class="btn btn-primary" name="Postid" value="@post.Id" hidden>Post</button>
                         </div>
                     </form>
-                }*@
+                }
             </div>
-
-
         }
     }
 </div>

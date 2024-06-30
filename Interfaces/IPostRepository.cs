@@ -9,9 +9,9 @@ namespace Blog.Interfaces
         public Post getPost(int id);
         public void AddPost(Post post);
         public void EditPost(int id, Post newpost);
-
         public void DeletePost(int id);
 
+        public List<Comment> GetComments();
         public Comment GetComment(int id);
         public void AddComment(Comment comment, int postid);
         public void DeleteComment(Comment comment, int postid);

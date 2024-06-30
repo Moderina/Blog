@@ -122,6 +122,13 @@ namespace Blog.Services
 
 
 
+
+
+        public List<Comment> GetComments()
+        {
+            return _repo.GetComments();
+        }
+
         public void AddComment(Comment comment, int postid)
         {
             comment.PostID = postid;

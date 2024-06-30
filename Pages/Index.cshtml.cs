@@ -14,9 +14,7 @@ namespace Blog.Pages
     {
         private readonly ILogger<IndexModel> _logger;
 
-        private readonly PostContext _postcontext;
-
-        private readonly IPostService _postservice;
+        private readonly IPostService _postService;
         private readonly IUserService _userservice;
 
         [BindProperty]
@@ -28,66 +26,46 @@ namespace Blog.Pages
         [BindProperty]
         public Comment Comment { get; set; }
 
-        //public List<Post> Posts { get; set; }
         public PaginatedList<Post> Posts { get; set; }
 
         public List<Comment> Comments { get; set; }
 
-        public List<Tag> Tags { get; set; }
 
-
-        public IndexModel(ILogger<IndexModel> logger, PostContext postContext, IPostService service, IUserService userService)
+        public IndexModel(ILogger<IndexModel> logger, IPostService service, IUserService userService)
         {
             _logger = logger;
-            _postcontext = postContext;
-            _postservice = service;
+            _postService = service;
             _userservice = userService;
         }
 
         public void OnGet(int pageIndex = 1)
         {
-            Posts = _postservice.GetPosts(pageIndex);
-            Tags = _postcontext.Tags.ToList();
-            Comments = _postcontext.Comments.ToList();
-
-            //foreach (var post in Posts) 
-            //{   
-            //    try
-            //    {
-            //        string[] temp = post.SerializedImages.Split("&");
-            //        //System.Diagnostics.Debug.WriteLine("EEEEEEEEEE" + temp[0].Substring(0, 100));
-            //        post.deserImages = temp.ToList();
-            //        System.Diagnostics.Debug.WriteLine("IIIIIIIIIIIIIII" + post.SerializedImages.Substring(post.SerializedImages.Length - 10));
-            //    }
-            //    catch 
-            //    {
-            //        post.deserImages = new List<string>();
-            //    }
-            //}
+            Posts = _postService.GetPosts(pageIndex);
+            Comments = _postService.GetComments();
         }
 
         public IActionResult OnPost(int pageIndex = 1)
         {
 
             Post.Author = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _postservice.AddPost(Post, Image);
-            Posts = _postservice.GetPosts(pageIndex);
+            _postService.AddPost(Post, Image);
+            Posts = _postService.GetPosts(pageIndex);
             return RedirectToPage();
         }
 
         public IActionResult OnPostComment(int Postid, int pageIndex = 1)
         {
             Comment.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _postservice.AddComment(Comment, Postid);
-            Posts = _postservice.GetPosts(pageIndex);
+            Comment.AddressIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _postService.AddComment(Comment, Postid);
+            Posts = _postService.GetPosts(pageIndex);
             return RedirectToPage();
         }
 
         public IActionResult OnPostDeleteComment(int comid, int pageIndex = 1)
         {
-            System.Diagnostics.Debug.WriteLine("UUUUUUUUUUU" + comid);
-            _postservice.DeleteComment(comid);
-            Posts = _postservice.GetPosts(pageIndex);
+            _postService.DeleteComment(comid);
+            Posts = _postService.GetPosts(pageIndex);
             return RedirectToPage();
         }
     }
